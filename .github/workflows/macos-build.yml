@@ -47,11 +47,11 @@ jobs:
         
       - name: Build for macOS (x86_64)
         if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'x86_64' }}
-        run: pnpm run macos
+        run: pnpm run build:macos
         
       - name: Build for macOS (aarch64)
         if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'aarch64' }}
-        run: pnpm run macos
+        run: pnpm run build:macos
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
