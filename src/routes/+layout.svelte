@@ -60,111 +60,123 @@
   }
 </script>
 
-<div class="navbar bg-base-100 shadow-sm">
-  <div class="navbar-start">
-    <div class="dropdown">
-      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-        <Menu />
+<div class="drawer">
+  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <!-- Navbar -->
+    <div class="navbar bg-base-100 shadow-sm">
+      <div class="navbar-start">
+        <label for="my-drawer" class="btn btn-ghost drawer-button lg:hidden">
+          <Menu />
+        </label>
+        <div class="navbar-center btn btn-ghost text-xl">VitapPal</div>
       </div>
-      <ul
-        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-auto p-2 shadow"
-      >
-        <li><a href="/timetable">Timetable</a></li>
-        <li><a href="/attendance">Attendance</a></li>
-        <li><a href="/utils">utils</a></li>
-        <li><a href="/settings">settings</a></li>
-      </ul>
-    </div>
-    <div class="navbar-center btn btn-ghost text-xl">VitapPal</div>
-  </div>
-  <a href="/timetable" class="">{tag(currentPage().replace("/", ""))} </a>
-  <div class="navbar-end">
-    <div class="tooltip tooltip-bottom">
-      <button class=""><Info class=" size-5 translate-y-[0.5vh]" /></button>
-      <div class="tooltip-content translate-x-[-16vh]">
-        <div class="overflow-auto rounded-box">
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Spin</th>
-                <th>No Spin</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th><Cog class="size-5 text-info" /></th>
-                <td>logging into vtop</td>
-                <td>-</td>
-              </tr>
-              <tr>
-                <th><Cog class="size-5 text-warning" /></th>
-                <td>Fetching data</td>
-                <td>No Internet</td>
-              </tr>
-              <tr>
-                <th><Cog class="size-5 text-success" /></th>
-                <td>-</td>
-                <td>Everything is upto date</td>
-              </tr>
-            </tbody>
-          </table>
+      <a href="/timetable" class="">{tag(currentPage().replace("/", ""))} </a>
+      <div class="navbar-end">
+        <div class="tooltip tooltip-bottom">
+          <button class=""><Info class=" size-5 translate-y-[0.5vh]" /></button>
+          <div class="tooltip-content translate-x-[-16vh]">
+            <div class="overflow-auto rounded-box">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Spin</th>
+                    <th>No Spin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th><Cog class="size-5 text-info" /></th>
+                    <td>logging into vtop</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th><Cog class="size-5 text-warning" /></th>
+                    <td>Fetching data</td>
+                    <td>No Internet</td>
+                  </tr>
+                  <tr>
+                    <th><Cog class="size-5 text-success" /></th>
+                    <td>-</td>
+                    <td>Everything is upto date</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+        <button
+          aria-label="settings"
+          onclick={() => goto("/settings")}
+          class="btn btn-ghost btn-circle"
+        >
+          <Cog
+            class="{errors.code == undefined &&
+            reload.status != true &&
+            errors.msg == undefined
+              ? 'text-success'
+              : errors.code == 'stop' && errors.msg != 'NE'
+                ? 'text-error'
+                : 'text-warning'}  {reload.status == true
+              ? 'animate-spin duration-1000 text-info '
+              : ''} "
+          />
+        </button>
       </div>
     </div>
-    <button
-      aria-label="settings"
-      onclick={() => goto("/settings")}
-      class="btn btn-ghost btn-circle"
-    >
-      <Cog
-        class="{errors.code == undefined &&
-        reload.status != true &&
-        errors.msg == undefined
-          ? 'text-success'
-          : errors.code == 'stop' && errors.msg != 'NE'
-            ? 'text-error'
-            : 'text-warning'}  {reload.status == true
-          ? 'animate-spin duration-1000 text-info '
-          : ''} "
-      />
-    </button>
+
+    <!-- Error messages -->
+    <div class="absolute w-full translate-y-[-1vh] z-10">
+      {#if errors.msg == "NE"}
+        <div class="bg-base-100">
+          <span class=" whitespace-nowrap overflow-auto text-xs"
+            ><div class=" text-center">
+              ⚠️ No Internet Connection. Data might be outdated
+            </div></span
+          >
+        </div>
+      {:else if errors.msg == "LI"}
+        <div class="bg-base-100">
+          <span class=" whitespace-nowrap overflow-auto text-xs"
+            ><div class="text-center">
+              <span class="loading loading-spinner text-info loading-xs"></span>
+              Attempting to log in to VTOP
+            </div></span
+          >
+        </div>
+      {:else if reload.status == true}
+        <div class=" bg-base-100">
+          <span class=" whitespace-nowrap overflow-auto text-xs">
+            <div class="text-center">
+              <span class="loading loading-spinner text-warning loading-xs"></span>
+              Updating data...
+            </div></span
+          >
+        </div>
+      {/if}
+    </div>
+
+    <!-- Page content -->
+    <div>
+      {@render children()}
+    </div>
+  </div>
+  
+  <!-- Drawer side -->
+  <div class="drawer-side z-20">
+    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu p-4 w-64 min-h-full bg-base-200 text-base-content">
+      <li class="menu-title font-bold text-lg mb-2">VitapPal</li>
+      <li><a href="/timetable" class="text-base">Timetable</a></li>
+      <li><a href="/attendance" class="text-base">Attendance</a></li>
+      <li><a href="/utils" class="text-base">Utils</a></li>
+      <li><a href="/settings" class="text-base">Settings</a></li>
+    </ul>
   </div>
 </div>
 
-<div class=" absolute w-full translate-y-[-1vh] z-10">
-  {#if errors.msg == "NE"}
-    <div class="bg-base-100">
-      <span class=" whitespace-nowrap overflow-auto text-xs"
-        ><div class=" text-center">
-          ⚠️ No Internet Connection. Data might be outdated
-        </div></span
-      >
-    </div>
-  {:else if errors.msg == "LI"}
-    <div class="bg-base-100">
-      <span class=" whitespace-nowrap overflow-auto text-xs"
-        ><div class="text-center">
-          <span class="loading loading-spinner text-info loading-xs"></span>
-          Attempting to log in to VTOP
-        </div></span
-      >
-    </div>
-  {:else if reload.status == true}
-    <div class=" bg-base-100">
-      <span class=" whitespace-nowrap overflow-auto text-xs">
-        <div class="text-center">
-          <span class="loading loading-spinner text-warning loading-xs"></span>
-          Updating data...
-        </div></span
-      >
-    </div>
-  {/if}
-</div>
-<div>
-  {@render children()}
-</div>
-
+<!-- Dock remains outside the drawer -->
 <div class="dock">
   <button
     onclick={() => goto("/timetable")}
