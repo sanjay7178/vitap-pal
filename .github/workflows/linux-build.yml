@@ -1,0 +1,63 @@
+name: Linux Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Linux build type'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - rpm-only
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Add Rust target
+        run: rustup target add x86_64-unknown-linux-gnu
+        
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev build-essential curl wget \
+            libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+            rpm
+            
+      - name: Install frontend dependencies
+        run: pnpm install
+        
+      - name: Build for Linux
+        if: ${{ github.event.inputs.build_type == 'full' }}
+        run: pnpm run build:linux
+        
+      - name: Build RPM only
+        if: ${{ github.event.inputs.build_type == 'rpm-only' }}
+        run: pnpm run build:rpm
+        
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-artifacts
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/rpm/*.rpm
+          if-no-files-found: ignore

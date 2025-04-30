@@ -8,7 +8,7 @@
     "build:linux": "pnpm run fix:pkg-config-path && tauri build --target x86_64-unknown-linux-gnu --bundles appimage rpm deb",
     "build:rpm": "pnpm run fix:pkg-config-path && tauri build --target x86_64-unknown-linux-gnu --bundles rpm",
     "build:windows": "rustup target add x86_64-pc-windows-msvc && tauri build --target x86_64-pc-windows-msvc",
-    "build:macos": "rustup target add x86_64-apple-darwin && tauri build --target x86_64-apple-darwin --bundles dmg app",
+    "build:macos": "rustup target add x86_64-apple-darwin && rustup target add aarch64-apple-darwin && tauri build --target x86_64-apple-darwin && tauri build --target aarch64-apple-darwin",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",

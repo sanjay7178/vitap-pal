@@ -1,0 +1,65 @@
+name: macOS Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      architecture:
+        description: 'macOS architecture'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - x86_64
+          - aarch64
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Add Rust targets
+        run: |
+          if [[ "${{ github.event.inputs.architecture }}" == "both" || "${{ github.event.inputs.architecture }}" == "x86_64" ]]; then
+            rustup target add x86_64-apple-darwin
+          fi
+          if [[ "${{ github.event.inputs.architecture }}" == "both" || "${{ github.event.inputs.architecture }}" == "aarch64" ]]; then
+            rustup target add aarch64-apple-darwin
+          fi
+        shell: bash
+        
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Install frontend dependencies
+        run: pnpm install
+        
+      - name: Build for macOS (x86_64)
+        if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'x86_64' }}
+        run: tauri build --target x86_64-apple-darwin --bundles dmg app
+        
+      - name: Build for macOS (aarch64)
+        if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'aarch64' }}
+        run: tauri build --target aarch64-apple-darwin --bundles dmg app
+        
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-artifacts
+          path: |
+            src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+            src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+            src-tauri/target/x86_64-apple-darwin/release/bundle/macos/*.app
+            src-tauri/target/aarch64-apple-darwin/release/bundle/macos/*.app
+          if-no-files-found: ignore
