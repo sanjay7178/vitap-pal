@@ -75,11 +75,12 @@ jobs:
         with:
           name: ${{ matrix.platform }}${{ matrix.target != '' && format('-{0}', matrix.target) || '' }}
           path: |
-            ${{ matrix.platform == 'windows-latest' && 'src-tauri/x86_64-pc-windows-msvc/target/release/bundle/msi/*.msi' || '' }}
-            ${{ matrix.platform == 'windows-latest' && 'src-tauri/x86_64-pc-windows-msvc/target/release/bundle/nsis/*.exe' || '' }}
+            ${{ matrix.platform == 'windows-latest' && 'src-tauri/x86_64-pc-windows-msvc/target/release/bundle/*' || '' }}
             ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg', matrix.target) || '' }}
             ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/x86_64-apple-darwin/release/bundle/macos/*.app.tar.gz', matrix.target) || '' }}
             ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/x86_64-apple-darwin/release/bundle/macos/*.dmg', matrix.target) || '' }}
             ${{ matrix.platform == 'ubuntu-22.04' && 'src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/deb/*.deb' || '' }}
             ${{ matrix.platform == 'ubuntu-22.04' && 'src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/rpm/*.rpm' || '' }}
+            # App image
+            ${{ matrix.platform == 'ubuntu-22.04' && 'src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage/vitap-pal.AppDir/*' || '' }}
           if-no-files-found: warn
