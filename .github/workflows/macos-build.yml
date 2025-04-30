@@ -47,11 +47,11 @@ jobs:
         
       - name: Build for macOS (x86_64)
         if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'x86_64' }}
-        run: tauri build --target x86_64-apple-darwin 
+        run: pnpm run macos
         
       - name: Build for macOS (aarch64)
         if: ${{ github.event.inputs.architecture == 'both' || github.event.inputs.architecture == 'aarch64' }}
-        run: tauri build --target aarch64-apple-darwin 
+        run: pnpm run macos
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
