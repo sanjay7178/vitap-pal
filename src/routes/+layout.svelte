@@ -62,19 +62,21 @@
 
 <div class="drawer">
   <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content">
+  <div class="drawer-content bg-base-300 p-2">
     <!-- Navbar -->
-    <div class="navbar bg-base-100 shadow-sm">
-      <div class="navbar-start">
+    <div class="navbar bg-base-100 shadow-sm ml-2 mr-0 md:ml-4 md:mr-2 my-2 rounded-box pl-3 pr-2 md:pl-5 md:pr-4">
+      <div class="navbar-start gap-2">
         <label for="my-drawer" class="btn btn-ghost drawer-button lg:hidden">
           <Menu />
         </label>
-        <div class="navbar-center btn btn-ghost text-xl">VitapPal</div>
+        <div class="btn btn-ghost text-xl">VitapPal</div>
       </div>
-      <a href="/timetable" class="">{tag(currentPage().replace("/", ""))} </a>
-      <div class="navbar-end">
+      <div class="navbar-center">
+        <a href="/timetable" class="font-medium">{tag(currentPage().replace("/", ""))}</a>
+      </div>
+      <div class="navbar-end gap-2">
         <div class="tooltip tooltip-bottom">
-          <button class=""><Info class=" size-5 translate-y-[0.5vh]" /></button>
+          <button class="btn btn-ghost btn-sm btn-circle"><Info class="size-5" /></button>
           <div class="tooltip-content translate-x-[-16vh]">
             <div class="overflow-auto rounded-box">
               <table class="table">
@@ -158,7 +160,7 @@
     </div>
 
     <!-- Page content -->
-    <div>
+    <div class="p-1">
       {@render children()}
     </div>
   </div>
@@ -166,8 +168,8 @@
   <!-- Drawer side -->
   <div class="drawer-side z-20">
     <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu p-4 w-64 min-h-full bg-base-200 text-base-content">
-      <li class="menu-title font-bold text-lg mb-2">VitapPal</li>
+    <ul class="menu p-6 w-64 min-h-full bg-base-200 text-base-content gap-2">
+      <li class="menu-title font-bold text-lg mb-4">VitapPal</li>
       <li><a href="/timetable" class="text-base">Timetable</a></li>
       <li><a href="/attendance" class="text-base">Attendance</a></li>
       <li><a href="/utils" class="text-base">Utils</a></li>
