@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat\cross-platform
+      - feat/cross-platform
 
 jobs:
   publish-tauri:
