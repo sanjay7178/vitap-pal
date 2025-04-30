@@ -16,12 +16,16 @@ jobs:
         include:
           - platform: 'macos-latest' # for Arm based macs (M1 and above).
             args: '--target aarch64-apple-darwin'
+            target: 'aarch64-apple-darwin'
           - platform: 'macos-latest' # for Intel based macs.
             args: '--target x86_64-apple-darwin'
+            target: 'x86_64-apple-darwin'
           - platform: 'ubuntu-22.04'
-            args: ''
+            args: '--target x86_64-unknown-linux-gnu'
+            target: ''
           - platform: 'windows-latest'
-            args: ''
+            args: '--target x86_64-pc-windows-msvc'
+            target: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -64,3 +68,18 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+          
+      # Upload artifacts to make them downloadable from GitHub Actions
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}${{ matrix.target != '' && format('-{0}', matrix.target) || '' }}
+          path: |
+            ${{ matrix.platform == 'windows-latest' && 'src-tauri/x86_64-pc-windows-msvc/target/release/bundle/msi/*.msi' || '' }}
+            ${{ matrix.platform == 'windows-latest' && 'src-tauri/x86_64-pc-windows-msvc/target/release/bundle/nsis/*.exe' || '' }}
+            ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg', matrix.target) || '' }}
+            ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/x86_64-apple-darwin/release/bundle/macos/*.app.tar.gz', matrix.target) || '' }}
+            ${{ matrix.platform == 'macos-latest' && format('src-tauri/target/x86_64-apple-darwin/release/bundle/macos/*.dmg', matrix.target) || '' }}
+            ${{ matrix.platform == 'ubuntu-22.04' && 'src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/deb/*.deb' || '' }}
+            ${{ matrix.platform == 'ubuntu-22.04' && 'src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/rpm/*.rpm' || '' }}
+          if-no-files-found: warn
