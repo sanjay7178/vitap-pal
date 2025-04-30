@@ -54,7 +54,7 @@ jobs:
         run: tauri build --target aarch64-apple-darwin --bundles dmg app
         
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-artifacts
           path: |
