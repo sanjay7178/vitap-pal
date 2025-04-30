@@ -2,9 +2,9 @@ name: 'publish'
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feat\cross-platform
+  # push:
+  #   branches:
+  #     - feat\cross-platform
 
 jobs:
   publish-tauri:
