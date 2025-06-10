@@ -20,13 +20,19 @@
   let marks = $state(undefined);
   async function loadfromstorage() {
     const store = await Store.load("marks.json");
+    if (selsemid.value == undefined) {
+      // Set default semester ID if none is selected
+      selsemid.value = "AP2024254";
+      await store.set("sel_marks_semid", "AP2024254");
+      await store.save();
+    }
+    
     if (selsemid.value != undefined) {
       marks = await store.get(`marks_${selsemid.value}`);
       let last_update: undefined | number = await store.get(
         `marks_${selsemid.value}_lastupdate`,
       );
       distime = last_update;
-      //console.log("sem id from storage",selsemid.value)
     }
   }
   let loaded = $state(false);
@@ -46,6 +52,11 @@
   }
 
   async function getmarks() {
+    // If no semester is selected, use the default
+    if (selsemid.value == undefined) {
+      selsemid.value = "AP2024254";
+    }
+    
     //console.log("runing");
     // console.log("in get attendance")
     if (selsemid.value == undefined) {

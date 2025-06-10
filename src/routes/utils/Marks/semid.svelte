@@ -26,6 +26,13 @@
   async function loadfromstorage() {
     const store = await Store.load("marks.json");
     let selsem: string | undefined = await store.get("sel_marks_semid");
+
+    // Set default semester ID if none is selected
+    if (!selsem) {
+      selsem = "AP2024254";
+      await store.set("sel_marks_semid", selsem);
+    }
+
     semid = await store.get("marks_semid");
     selsemid.value = selsem;
     await store.save();
